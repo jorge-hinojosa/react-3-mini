@@ -29,8 +29,12 @@ class App extends Component {
   }
 
   getVehicles() {
-    // axios (GET)
-    // setState with response -> vehiclesToDisplay
+    axios.get('https://joes-autos.herokuapp.com/api/vehicles').then(
+    res=> {
+      toast.success('Successfully got vehicles!');
+      this.setState({vehiclesToDisplay: res.data})
+    }).catch(
+      () => toast.error("Failed at fetching vehicles."));
   }
 
   getPotentialBuyers() {
@@ -40,7 +44,14 @@ class App extends Component {
 
   sellCar(id) {
     // axios (DELETE)
-    // setState with response -> vehiclesToDisplay
+    axios.delete(`https://joes-autos.herokuapp.com/api/vehicles/${id}`)
+      .then(res=> {
+        toast.success('Vehicle has been SOLD!');
+        // setState with response -> vehiclesToDisplay
+        this.setState({vehiclesToDisplay: res.data.vehicles})
+      }).catch(
+        ()=> toast.error("Woops! Let's try again.")
+      )
   }
 
   filterByMake() {
@@ -59,6 +70,12 @@ class App extends Component {
 
   updatePrice(priceChange, id) {
     // axios (PUT)
+    axios.put(`https://joes-autos.herokuapp.com/api/vehicles/${id}/${priceChange}`)
+      .then((res) => {
+        toast.success('Price updated')
+        this.setState({vehiclesToDisplay: res.data.vehicles})
+      }).catch(
+        () => toast.error("Failed at updating price."));
     // setState with response -> vehiclesToDisplay
   }
 
@@ -72,7 +89,14 @@ class App extends Component {
     };
 
     // axios (POST)
-    // setState with response -> vehiclesToDisplay
+    axios.post('https://joes-autos.herokuapp.com/api/vehicles', newCar)
+      .then(res => {
+        console.log(res);
+        toast.success('Vehicle successfully uploaded');
+        // setState with response -> vehiclesToDisplay
+        this.setState({vehiclesToDisplay: res.data.vehicles});
+      }).catch(
+        () => toast.error("Failed at uploading vehicle"));
   }
 
   addBuyer() {
@@ -258,7 +282,6 @@ class App extends Component {
             type="number"
             placeholder="Year"
           />
-
           <button onClick={this.byYear} className="btn-inp">
             Go
           </button>
